@@ -1,0 +1,41 @@
+<!---Ex6\src\main\webapp--->
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>WebSocket Chat</title> 
+</head> 
+<body> 
+<h2>Real-Time Chat</h2> 
+<textarea id="messages" rows="10" cols="40" readonly></textarea> 
+<br><br> 
+<input type="text" id="username" placeholder="Enter your name"> 
+<br><br> 
+<input type="text" id="inputMsg" placeholder="Enter message"> 
+<button onclick="sendMsg()">Send</button> 
+<script> 
+var ws = new WebSocket("ws://localhost:8080/Ex6/WS"); 
+ws.onopen = function() { 
+document.getElementById("messages").value = "Connected to server\n"; 
+}; 
+ws.onmessage = function(event) { 
+document.getElementById("messages").value += event.data + "\n"; 
+}; 
+ws.onerror = function() { 
+document.getElementById("messages").value += "WebSocket connection error\n"; 
+}; 
+ws.onclose = function() { 
+    document.getElementById("messages").value += "Connection closed\n"; 
+}; 
+function sendMsg() { 
+    var username = document.getElementById("username").value.trim(); 
+    var msg = document.getElementById("inputMsg").value.trim(); 
+    if (username == "" || msg == "") { 
+        alert("Enter name and message"); 
+        return; 
+    } 
+    ws.send(username + " : " + msg); 
+    document.getElementById("inputMsg").value = ""; 
+} 
+</script> 
+</body> 
+</html> 
